@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 8080
 const app = express()
 
 const corsOptions = {
-  origin: ['https://somos-modus.com', 'https://somosmodus.com', 'http://localhost:3000/'],
+  origin: ['https://somos-modus.com', 'https://somosmodus.com', 'http://localhost:3000'],
   credentials: true,
   optionsSuccessStatus: 200, 
 };
