@@ -1,0 +1,50 @@
+Iniciar proyecto node --> npm init -y
+Instalar Dependencias :
+    --> npm install express
+    --> npm install cors
+    --> npm install cookie-parser
+    --> npm i mongoose
+    --> npm i dotenv
+    --> npm i bcrypt
+    #para el sistema de logueo
+    --> npm i passport
+    --> npm i passport-local
+    --> npm i express-session
+    --> npm i connect-mongo
+    
+
+#Conexion a Mongo Atlas
+En archivo conection dentro de la carpeta conection está la conexion a mongo atlas para luego utilizarla en el MongoContainer
+
+#Container con Mongo Atlas
+Crear un archivo MongoContainer en la carpeta container, este archivo va a tener los metodos propios de mongo para interactuar con la BD. Y luego los DAOS acudiran a el.
+Dentro de la carpeta container crear una carpeta Daos que va a contener todos los modesl schemas y luego un archivo index que los centralice a todos
+Tambien en la carpeta Daos crear un archivo daos por cada schema que contenga metodos personalizados segun necesite
+
+#Router
+Crear una carpeta Router, dentro un archivo index que centralice a todos los router
+Crear un archivo router por cada endpoint general (models)
+
+#Autenticacion
+Antes que nada tengo que tenér instalado passport, passport-local, express.session (para poder guardar la sesion), connect-mongo (para poder guardar la sesion en mongo)
+Crear un archivo middleware que utilizará passport para el sistema de logueo. En el mismo crear la estrategia, en este caso estrategia local.
+Ademas en este archivo middleware se define que se hace con la sesion, en ese caso se esta guardando el id del usuario --> 
+    passport.serializeUser(async(user, done) => {  //esto es para guardar el id del usuario en la sesión
+        return done(null, user._id);  
+    });
+en este archivo tambien creamos el metodo de deserializar, propio de passport.
+En el router declaramos que vamos a utilizar el metodo de passport para el logueo, y que luego del logue devuelva el status. En caso de erro se hace una peticion a una ruta de error
+En el archivo app.js definimos el uso de las sesiones. Para ello:
+    - Encripatar la cookie de la sesion --> app.use(cookieParser('secretcode'));
+    - importar e utilizar MongoStore para guardar la sesion en mongo.
+    - Definir como se va a implementar la sesion. --> app.use(session({...}))
+    - Hacer uso de passport initialize y passport session para iniciar passpor y manejar la sesion --> 
+        app.use(passport.initialize());
+        app.use(passport.session());
+Importar en el app.js express-session y connect-mongo para poder implementar toda la configuracion de la session
+Es muy importante la configuracion del cors, ya que dentro de las politicas de CORS no se permite utilizar origin: '*' (cualquier origen) con withCredentials: true (habilita el uso de cookies)
+Por lo cual, para poder guardar la cookie de la sesion debemos especificar el origen permitido de las peticiones -->
+    app.use(cors({
+        origin: 'http://localhost:3000',
+        credentials: true
+    }))
