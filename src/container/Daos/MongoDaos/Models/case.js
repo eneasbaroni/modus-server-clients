@@ -12,6 +12,10 @@ const caseSchema = new Schema({
 	link: {
 		type: String,
 		required: true
+	},
+	client: {
+		type: String,
+		required: true
 	}
 })
 
